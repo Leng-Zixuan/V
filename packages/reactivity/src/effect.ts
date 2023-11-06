@@ -45,15 +45,22 @@ export function track(target: object, key: unknown) {
 
   // 为指定Map对象，指定key，并设置回调函数
   depsMap.set(key, activeEffect)
-  console.log(targetMap)
 }
 
 /**
  * 触发依赖
- * @param target
- * @param key
+ * @param target WeakMap的Key
+ * @param key 代理对象的key，当依赖被触发时，需要根据该key获取
  * @param newValue
  */
 export function trigger(target: object, key: unknown, newValue: unknown) {
-  console.log('trigger: 触发依赖')
+  // 根据targe获取存储的Map实例
+  const depsMap = targetMap.get(target)
+  if (!depsMap) return
+
+  // 依据key，从depsMap中取出value，该value是一个ReactiveEffect类型的数据
+  const effect = depsMap.get(key) as ReactiveEffect
+  if (!effect) return
+
+  effect.fn()
 }

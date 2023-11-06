@@ -15,6 +15,9 @@
   effect(() => {
     document.querySelector('#app').innerText = obj.name
   })
-  // obj.name = '李四'
+
+  setTimeout(() => {
+    obj.name = '李四'
+  }, 3000)
 </script>
 </html>
