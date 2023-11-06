@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../../dist/v.js"></script>
+</head>
+<body>
+  <div id="app"></div>
+</body>
+<script>
+  const { reactive, effect } = V;
+  const obj = reactive({ name: '张三' })
+  effect(() => {
+    document.querySelector('#app').innerText = obj.name
+  })
+  // obj.name = '李四'
+</script>
+</html>
