@@ -13,9 +13,7 @@
     "module": "esnext",
     "removeComments": false,
     "sourceMap": false,
-    "lib": ["esnext", "dom"],
+    "lib": ["esnext", "dom"]
   },
-  "include": [
-    "packages/*/src",
-  ]
+  "include": ["packages/*/src"]
 }

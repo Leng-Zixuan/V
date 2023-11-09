@@ -1,1 +1,1 @@
-export { reactive, effect } from '../../reactivity/src'
+export { reactive, effect, ref } from '../../reactivity/src'

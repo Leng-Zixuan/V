@@ -1,4 +1,8 @@
-type KeyToDepMap = Map<any, ReactiveEffect>
+import { isArray } from '../../shared/src'
+import { Dep, createDep } from './dep'
+
+type KeyToDepMap = Map<any, Dep>
+
 /**
  * 收集所有依赖的WeakMap实例
  * 1. key: 响应式对象
@@ -43,8 +47,20 @@ export function track(target: object, key: unknown) {
     targetMap.set(target, (depsMap = new Map()))
   }
 
-  // 为指定Map对象，指定key，并设置回调函数
-  depsMap.set(key, activeEffect)
+  let dep = depsMap.get(key)
+  if (!dep) {
+    // 为指定Map对象，指定key，并设置回调函数
+    depsMap.set(key, (dep = createDep()))
+  }
+
+  trackEffects(dep)
+}
+
+/**
+ * 利用Dep依次跟踪指定key的所有Effect
+ */
+export function trackEffects(dep: Dep) {
+  dep.add(activeEffect!)
 }
 
 /**
@@ -56,11 +72,33 @@ export function track(target: object, key: unknown) {
 export function trigger(target: object, key: unknown, newValue: unknown) {
   // 根据targe获取存储的Map实例
   const depsMap = targetMap.get(target)
+
   if (!depsMap) return
 
   // 依据key，从depsMap中取出value，该value是一个ReactiveEffect类型的数据
-  const effect = depsMap.get(key) as ReactiveEffect
-  if (!effect) return
+  const dep: Dep | undefined = depsMap.get(key)
 
-  effect.fn()
+  if (!dep) return
+
+  triggerEffects(dep)
+}
+
+/**
+ * 依次触发dep中保存的依赖
+ * @param dep 响应式数据对应的Effect队列
+ */
+export function triggerEffects(dep: Dep) {
+  const effects = isArray(dep) ? dep : [...dep]
+
+  for (const effect of effects) {
+    triggerEffect(effect)
+  }
+}
+
+/**
+ * 触发指定依赖
+ * @param effect
+ */
+export function triggerEffect(effect: ReactiveEffect) {
+  effect.run()
 }

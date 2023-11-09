@@ -8,16 +8,17 @@
 </head>
 <body>
   <div id="app"></div>
+
 </body>
 <script>
-  const { reactive, effect } = V;
-  const obj = reactive({ name: '张三' })
+  const { ref, effect } = V
+  const obj = ref('111')
   effect(() => {
-    document.querySelector('#app').innerText = obj.name
+    document.querySelector('#app').innerText = obj.value
   })
 
   setTimeout(() => {
-    obj.name = '李四'
+    obj.value = '222'
   }, 3000)
 </script>
 </html>
