@@ -1,5 +1,8 @@
 import { isArray } from '../../shared/src'
+import { ComputedRefImpl } from './computed'
 import { Dep, createDep } from './dep'
+
+export type EffectScheduler = () => void
 
 type KeyToDepMap = Map<any, Dep>
 
@@ -22,7 +25,12 @@ export function effect<T = any>(fn: () => T) {
 export let activeEffect: ReactiveEffect | undefined
 
 export class ReactiveEffect<T = any> {
-  constructor(public fn: () => T) {}
+  computed?: ComputedRefImpl<T>
+
+  constructor(
+    public fn: () => T,
+    public scheduler: EffectScheduler | null = null
+  ) {}
 
   run() {
     activeEffect = this
@@ -100,5 +108,9 @@ export function triggerEffects(dep: Dep) {
  * @param effect
  */
 export function triggerEffect(effect: ReactiveEffect) {
-  effect.run()
+  if (effect.scheduler) {
+    effect.scheduler()
+  } else {
+    effect.run()
+  }
 }

@@ -16,3 +16,12 @@ export const isObject = (value: unknown) => {
 export const hasChanged = (value: unknown, oldValue: unknown): boolean => {
   return !Object.is(value, oldValue)
 }
+
+/**
+ * 判断是否为函数
+ * @param value unknown
+ * @returns boolean
+ */
+export const isFunction = (value: unknown): value is Function => {
+  return typeof value === 'function'
+}
